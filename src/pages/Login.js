@@ -36,22 +36,23 @@ class Login extends React.Component {
     const minLength = 3;
     return (
       <div data-testid="page-login">
-        <form>
-          {loading && <Loading />}
-          <input
-            onChange={ this.onInputChange }
-            data-testid="login-name-input"
-          />
-          <button
-            disabled={ userName.length < minLength }
-            type="button"
-            data-testid="login-submit-button"
-            onClick={ this.loadUser }
-          >
-            Entrar
-          </button>
-          {redirect && <Redirect to="/search" />}
-        </form>
+        {loading ? <Loading />
+          : (
+            <form>
+              <input
+                onChange={ this.onInputChange }
+                data-testid="login-name-input"
+              />
+              <button
+                disabled={ userName.length < minLength }
+                type="button"
+                data-testid="login-submit-button"
+                onClick={ this.loadUser }
+              >
+                Entrar
+              </button>
+              {redirect && <Redirect to="/search" />}
+            </form>)}
       </div>
     );
   }
