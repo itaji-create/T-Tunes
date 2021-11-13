@@ -11,7 +11,6 @@ import NotFound from './pages/NotFound';
 
 class App extends React.Component {
   render() {
-
     return (
       <BrowserRouter>
         <Switch>
