@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import Header from '../components/Header';
 import getMusics from '../services/musicsAPI';
 import MusicCard from '../components/MusicCard';
+import { addSong } from '../services/favoriteSongsAPI';
+import Loading from '../components/Loading';
 
 class Album extends React.Component {
   constructor(props) {
@@ -12,7 +14,10 @@ class Album extends React.Component {
       id: params.id,
       musics: [],
       load: false,
+      loading: false,
+      favorite: [],
     };
+    this.favorites = this.favorites.bind(this);
   }
 
   componentDidMount = () => {
@@ -22,11 +27,21 @@ class Album extends React.Component {
     });
   }
 
+  favorites({ target }) {
+    const id = target.parentNode.firstChild.innerHTML;
+    this.setState({ loading: true });
+    addSong(id).then((data) => {
+      this.setState((prevState) => ({
+        favorite: [...prevState.favorite, data], loading: false }));
+    });
+  }
+
   render() {
-    const { musics, load } = this.state;
+    const { musics, load, loading } = this.state;
     return (
       <div data-testid="page-album">
         <Header />
+        {loading && <Loading />}
         {load && (
           <>
             <p data-testid="artist-name">{ musics[0].artistName }</p>
@@ -36,6 +51,8 @@ class Album extends React.Component {
                 key={ music.trackName }
                 trackName={ music.trackName }
                 previewUrl={ music.previewUrl }
+                trackId={ music.trackId }
+                isChecked={ this.favorites }
               />
             ))}
           </>
