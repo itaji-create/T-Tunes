@@ -26,9 +26,7 @@ class Search extends React.Component {
     const { search } = this.state;
     this.setState({ loading: true });
     searchAlbumsAPI(search).then((data) => {
-      this.setState({ albuns: data });
-      this.setState({ loading: false });
-      this.setState({ text: true });
+      this.setState({ albuns: data, loading: false, text: true });
     });
   }
 
