@@ -8,9 +8,10 @@ class MusicCard extends React.Component {
       previewUrl,
       trackId,
       isChecked,
+      favoriteSongs,
     } = this.props;
     return (
-      <>
+      <div>
         <p>{trackId}</p>
         <p>{trackName}</p>
         <audio data-testid="audio-component" src={ previewUrl } controls>
@@ -23,10 +24,12 @@ class MusicCard extends React.Component {
           <input
             data-testid={ `checkbox-music-${trackId}` }
             type="checkbox"
-            onClick={ isChecked }
+            id={ trackId }
+            onChange={ favoriteSongs }
+            checked={ isChecked }
           />
         </label>
-      </>
+      </div>
     );
   }
 }
@@ -36,6 +39,7 @@ MusicCard.propTypes = {
   previewUrl: PropTypes.string.isRequired,
   trackId: PropTypes.number.isRequired,
   isChecked: PropTypes.bool.isRequired,
+  favoriteSongs: PropTypes.func.isRequired,
 };
 
 export default MusicCard;

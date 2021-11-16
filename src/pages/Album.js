@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Header from '../components/Header';
 import getMusics from '../services/musicsAPI';
 import MusicCard from '../components/MusicCard';
-import { addSong } from '../services/favoriteSongsAPI';
+import { addSong, getFavoriteSongs, removeSong } from '../services/favoriteSongsAPI';
 import Loading from '../components/Loading';
 
 class Album extends React.Component {
@@ -15,7 +15,8 @@ class Album extends React.Component {
       musics: [],
       load: false,
       loading: false,
-      favorite: [],
+      favorited: [],
+      cheked: false,
     };
     this.favorites = this.favorites.bind(this);
   }
@@ -25,19 +26,30 @@ class Album extends React.Component {
     getMusics(id).then((data) => {
       this.setState({ musics: data, load: true });
     });
+    getFavoriteSongs().then((data) => {
+      this.setState({ favorited: [...data] });
+      console.log(this.state);
+    });
   }
 
-  favorites({ target }) {
-    const id = target.parentNode.firstChild.innerHTML;
+  favorites({ target: { id, checked } }) {
     this.setState({ loading: true });
-    addSong(id).then((data) => {
-      this.setState((prevState) => ({
-        favorite: [...prevState.favorite, data], loading: false }));
+    if (checked) {
+      addSong(id).then((data) => {
+        this.setState({ favorited: [...data], loading: false });
+      });
+    } else {
+      removeSong(id).then((data) => {
+        this.setState({ favorited: [...data], loading: false });
+      });
+    }
+    getFavoriteSongs().then((data) => {
+      this.setState({ favorited: [...data] });
     });
   }
 
   render() {
-    const { musics, load, loading } = this.state;
+    const { musics, load, loading, favorited } = this.state;
     return (
       <div data-testid="page-album">
         <Header />
@@ -52,7 +64,10 @@ class Album extends React.Component {
                 trackName={ music.trackName }
                 previewUrl={ music.previewUrl }
                 trackId={ music.trackId }
-                isChecked={ this.favorites }
+                favoriteSongs={ this.favorites }
+                isChecked={
+                  favorited.some((e) => parseFloat(e) === music.trackId)
+                }
               />
             ))}
           </>
