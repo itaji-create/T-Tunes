@@ -16,30 +16,33 @@ class Album extends React.Component {
       load: false,
       loading: false,
       favorited: [],
-      cheked: false,
     };
-    this.favorites = this.favorites.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount = () => {
     const { id } = this.state;
     getMusics(id).then((data) => {
-      this.setState({ musics: data, load: true });
-    });
-    getFavoriteSongs().then((data) => {
-      this.setState({ favorited: [...data] });
-      console.log(this.state);
+      this.setState({ musics: data, loading: true });
+      getFavoriteSongs().then((e) => {
+        this.setState({ favorited: [...e], load: true, loading: false });
+        console.log(this.state);
+      });
     });
   }
 
-  favorites({ target: { id, checked } }) {
+  handleChange({ target: { id, checked } }) {
     this.setState({ loading: true });
+    const { musics } = this.state;
+    const idObj = musics.find((music) => music.trackId === Number(id));
+    console.log(idObj);
     if (checked) {
-      addSong(id).then((data) => {
+      addSong(idObj).then((data) => {
         this.setState({ favorited: [...data], loading: false });
       });
-    } else {
-      removeSong(id).then((data) => {
+    }
+    if (!checked) {
+      removeSong(idObj).then((data) => {
         this.setState({ favorited: [...data], loading: false });
       });
     }
@@ -64,9 +67,9 @@ class Album extends React.Component {
                 trackName={ music.trackName }
                 previewUrl={ music.previewUrl }
                 trackId={ music.trackId }
-                favoriteSongs={ this.favorites }
+                favoriteSongs={ this.handleChange }
                 isChecked={
-                  favorited.some((e) => parseFloat(e) === music.trackId)
+                  favorited.some((e) => e.trackId === music.trackId)
                 }
               />
             ))}
