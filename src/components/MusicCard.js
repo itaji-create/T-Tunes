@@ -12,7 +12,6 @@ class MusicCard extends React.Component {
     } = this.props;
     return (
       <div>
-        <p>{trackId}</p>
         <p>{trackName}</p>
         <audio data-testid="audio-component" src={ previewUrl } controls>
           <track kind="captions" />
