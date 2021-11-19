@@ -21,17 +21,15 @@ class Favorites extends React.Component {
     });
   }
 
-  handleChange({ target: { id, checked } }) {
+  handleChange({ target: { id } }) {
     const { favorited } = this.state;
     const idObj = favorited.find((music) => music.trackId === Number(id));
     this.setState({ loading: true });
-    if (!checked) {
-      removeSong(idObj).then((data) => {
-        this.setState({ favorited: [...data], loading: false });
-      });
-    }
-    getFavoriteSongs().then((data) => {
+    removeSong(idObj).then((data) => {
       this.setState({ favorited: [...data] });
+    });
+    getFavoriteSongs().then((data) => {
+      this.setState({ favorited: [...data], loading: false });
     });
   }
 
